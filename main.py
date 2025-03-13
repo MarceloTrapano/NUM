@@ -12,7 +12,7 @@ DEFAULT_BATCH_SIZE = 6
 DEFAULT_NUM_WORKERS = 3
 DEFAULT_MAX_EPOCHS = 2
 
-def main(batch_size = DEFAULT_BATCH_SIZE, num_workers = DEFAULT_NUM_WORKERS, max_epochs = DEFAULT_MAX_EPOCHS, model_path = None):
+def main(batch_size = DEFAULT_BATCH_SIZE, num_workers = DEFAULT_NUM_WORKERS, max_epochs = DEFAULT_MAX_EPOCHS, model_path = None, aha):
     # mniejszy rozmiar - szybsze uczenie; resize -> crop by zachować detale na środku - brzegi mniej ważne
     transform = tr.transforms.Compose([
         tr.transforms.Resize(RESIZE_SIZE),
