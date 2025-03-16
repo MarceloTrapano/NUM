@@ -6,16 +6,17 @@ from lightning.pytorch import seed_everything
 from torchvision import models
 import sys
 import os
+import argparse
 
 # RESIZE_SIZE = 256
 RESIZE_SIZE = 224
 CROP_SIZE = 224
 DEFAULT_BATCH_SIZE = 20
-DEFAULT_NUM_WORKERS = 10
-DEFAULT_MAX_EPOCHS = 100
+DEFAULT_NUM_WORKERS = 5
+DEFAULT_MAX_EPOCHS = 2
 NUM_CLASSES = 5
 
-def main(batch_size = DEFAULT_BATCH_SIZE, num_workers = DEFAULT_NUM_WORKERS, max_epochs = DEFAULT_MAX_EPOCHS, model_path = None, test_only = False):
+def main(dataset_dir = "Dataset" , batch_size = DEFAULT_BATCH_SIZE, num_workers = DEFAULT_NUM_WORKERS, max_epochs = DEFAULT_MAX_EPOCHS, model_path = None, test_only = False):
     # mniejszy rozmiar - szybsze uczenie; resize -> crop by zachować detale na środku - brzegi mniej ważne
     # transform = tr.transforms.Compose([
     #     tr.transforms.Resize(RESIZE_SIZE),
@@ -29,7 +30,7 @@ def main(batch_size = DEFAULT_BATCH_SIZE, num_workers = DEFAULT_NUM_WORKERS, max
     seed_everything(121, workers=True) # dla odtwarzalności uczenia
     # dataset: https://www.kaggle.com/datasets/imsparsh/flowers-dataset/
     data = tr.LightingData(
-        dataset_dir = 'C:\\Users\\jkond\\Desktop\\studia\\NUM\\Dataset',
+        dataset_dir = dataset_dir,
         batch_size = batch_size,
         num_workers = num_workers,
         transform = transform
@@ -60,12 +61,13 @@ def main(batch_size = DEFAULT_BATCH_SIZE, num_workers = DEFAULT_NUM_WORKERS, max
     trainer.test(model, data)
 
 if __name__ == '__main__':
-    model_path = None
-    if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
-        model_path = sys.argv[1]
-        print("Loading model from file.")
-    if len(sys.argv) > 2 and sys.argv[2] == "test":
-        test_only = True
-    else:
-        test_only = False
-    main(model_path = model_path, test_only = test_only)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_path", "-m", default=None)
+    parser.add_argument("--dataset_dir", "-d", type=str, default="Dataset")
+    parser.add_argument("--batch_size", "-bs", type=int, default=DEFAULT_BATCH_SIZE)
+    parser.add_argument("--num_workers", "-nw", type=int, default=DEFAULT_NUM_WORKERS)
+    parser.add_argument("--max_epochs", "-ep", type=int, default=DEFAULT_MAX_EPOCHS)
+    parser.add_argument("--test", "-t", action="store_true")
+    args = parser.parse_args()
+
+    main(model_path = args.model_path, test_only = args.test, dataset_dir = args.dataset_dir, batch_size = args.batch_size, num_workers = args.num_workers, max_epochs = args.max_epochs)
