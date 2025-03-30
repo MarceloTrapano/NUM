@@ -1,0 +1,15 @@
+service: "service:cnn"
+labels:
+  owner: Kacper Dabrowski, Jakub Kondys
+  project: Flower classificator
+include:
+- "utils.py"
+- "service.py"
+python:
+  packages:
+    - torch
+    - torchvision
+    - pytorch-lightning
+    - pandas
+    - numpy
+    - pillow
